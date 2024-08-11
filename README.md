@@ -1,4 +1,5 @@
 # Purpose of the 'marstore' package
+[![Go Reference](https://pkg.go.dev/badge/github.com/jeannot-muller/marstore.svg)](https://pkg.go.dev/github.com/jeannot-muller/marstore)
 
 **marstore** stands for **m**365, **a**uthentication, **r**edis, and (redis)-**store**. This package helps business developers authenticate their users against M365 (business and university) accounts. This package helps with authenticating M365 / Entra services in the Go language.
 
