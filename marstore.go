@@ -1,7 +1,9 @@
 // Package marstore enables microsoft OAuth Authentication
-// combined with REDIS and a RedisStore with Gorilla Sessions.
-// This is currently work in progress. Don't use in production yet!
+// combined with Redis and a RedisStore with Gorilla Sessions.
+//
 // An example app can be cloned from here: https://github.com/jeannot-muller/marstore_example
+// The example repository includes a README file with further details.
+
 package marstore
 
 import (
@@ -16,7 +18,6 @@ import (
 	"log"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"time"
 )
@@ -79,6 +80,7 @@ type Config struct {
 	IsProduction     bool
 	RedisPort        int
 	RedisHostName    string
+	RedisPoolSize    int
 	AllowOrigin      []string
 	AllowMethods     []string
 	AllowHeaders     []string
@@ -99,12 +101,12 @@ var Store *redistore.RediStore
 // If an error occurs during initialization, it prints an error message and exits the program.
 // Finally, it prints a message indicating that the Redis Store is running at the specified address.
 // Note: This function assumes that the Redis server is running on "localhost:6379".
-func InitializeStore(c Config) {
+// Note: This function assumes that the Redis server is running on "localhost:6379".
+func InitializeStore(c Config) error {
 	hostname := c.RedisHostName + ":" + strconv.Itoa(c.RedisPort)
-	store, err := redistore.NewRediStore(10, "tcp", hostname, "", []byte(c.SecurityKeyStore))
+	store, err := redistore.NewRediStore(c.RedisPoolSize, "tcp", hostname, "", []byte(c.SecurityKeyStore))
 	if err != nil {
-		fmt.Println("Error initializing Redis Store:", err)
-		os.Exit(1)
+		return errors.Wrap(err, "error initializing Redis Store:")
 	}
 
 	gob.Register(Users{})
@@ -120,6 +122,7 @@ func InitializeStore(c Config) {
 	fmt.Println("Redis Store running at localhost: 6379.")
 	// Assign the store to the package-level Store variable
 	Store = store
+	return nil
 }
 
 // getSessionMaxAge returns the value of the SessionMaxAge field from the Config struct.
