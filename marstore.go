@@ -1,6 +1,7 @@
 // Package marstore enables microsoft OAuth Authentication
 // combined with REDIS and a RedisStore with Gorilla Sessions.
 // This is currently work in progress. Don't use in production yet!
+// An example app can be cloned from here: https://github.com/jeannot-muller/marstore_example
 package marstore
 
 import (
